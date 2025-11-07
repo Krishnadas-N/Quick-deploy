@@ -1,0 +1,2 @@
+"""GUI interface for QuickDeploy."""
+
