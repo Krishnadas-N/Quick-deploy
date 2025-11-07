@@ -23,7 +23,7 @@ def find_python_executable(version: Optional[str] = None) -> str:
                     return cmd
             except (subprocess.CalledProcessError, FileNotFoundError):
                 continue
-    
+
     # Fallback to current Python
     return sys.executable
 
@@ -44,7 +44,7 @@ def detect_framework(entrypoint: Path) -> Optional[str]:
             return "flask"
     except Exception:
         pass
-    
+
     return None
 
 
@@ -54,7 +54,7 @@ def find_entrypoint(project_path: Path, config_entrypoint: Optional[str] = None)
         candidate = project_path / config_entrypoint
         if candidate.exists():
             return candidate
-    
+
     # Common entrypoint names
     common_names = ["app.py", "main.py", "server.py", "run.py", "index.py"]
     for name in common_names:
@@ -92,7 +92,7 @@ def get_cache_dir() -> Path:
         cache_base = Path.home() / "Library" / "Caches"
     else:
         cache_base = Path.home() / ".cache"
-    
+
     return ensure_dir(cache_base / "quickdeploy")
 
 

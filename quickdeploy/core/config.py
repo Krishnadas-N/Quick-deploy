@@ -17,7 +17,7 @@ class QuickDeployConfig:
     ignore_patterns: list[str] = field(default_factory=lambda: ["*.pyc", "__pycache__", ".git", ".qd_env"])
     env_vars: dict[str, str] = field(default_factory=dict)
     install_args: list[str] = field(default_factory=list)
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "QuickDeployConfig":
         """Create config from dictionary."""
@@ -31,7 +31,7 @@ class QuickDeployConfig:
             env_vars=data.get("env_vars", {}),
             install_args=data.get("install_args", [])
         )
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert config to dictionary."""
         return {
@@ -44,7 +44,7 @@ class QuickDeployConfig:
             "env_vars": self.env_vars,
             "install_args": self.install_args
         }
-    
+
     def save(self, path: Path) -> None:
         """Save config to YAML file."""
         with open(path, "w", encoding="utf-8") as f:
@@ -54,7 +54,7 @@ class QuickDeployConfig:
 def load_config(project_path: Path) -> QuickDeployConfig:
     """Load configuration from .quickdeploy.yaml or return defaults."""
     config_path = project_path / ".quickdeploy.yaml"
-    
+
     if config_path.exists():
         try:
             with open(config_path, "r", encoding="utf-8") as f:
@@ -63,7 +63,7 @@ def load_config(project_path: Path) -> QuickDeployConfig:
         except Exception as e:
             print(f"Warning: Failed to load config from {config_path}: {e}")
             print("Using default configuration.")
-    
+
     return QuickDeployConfig()
 
 
@@ -72,7 +72,7 @@ def create_default_config(project_path: Path, entrypoint: Optional[str] = None) 
     config = QuickDeployConfig()
     if entrypoint:
         config.entrypoint = entrypoint
-    
+
     config_path = project_path / ".quickdeploy.yaml"
     config.save(config_path)
     return config

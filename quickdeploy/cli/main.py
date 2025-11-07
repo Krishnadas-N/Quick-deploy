@@ -41,18 +41,18 @@ def run(
 ):
     """Run a Python project instantly."""
     project_path = Path(path).resolve()
-    
+
     if not project_path.exists():
         console.print(f"[red]Error: Path does not exist: {project_path}[/red]")
         raise typer.Exit(1)
-    
+
     if not project_path.is_dir():
         console.print(f"[red]Error: Path is not a directory: {project_path}[/red]")
         raise typer.Exit(1)
-    
+
     # Load or create config
     config = load_config(project_path)
-    
+
     # Override config with CLI options
     if port:
         config.port = port
@@ -60,15 +60,15 @@ def run(
         config.auto_reload = False
     if python_version:
         config.python_version = python_version
-    
+
     # Check for entrypoint
     entrypoint = find_entrypoint(project_path, config.entrypoint)
     if not entrypoint:
-        console.print(f"[yellow]Warning: No entrypoint found. Creating default config...[/yellow]")
+        console.print("[yellow]Warning: No entrypoint found. Creating default config...[/yellow]")
         create_default_config(project_path)
-        console.print(f"[cyan]Please edit .quickdeploy.yaml and set the entrypoint.[/cyan]")
+        console.print("[cyan]Please edit .quickdeploy.yaml and set the entrypoint.[/cyan]")
         raise typer.Exit(1)
-    
+
     console.print(Panel.fit(
         f"[bold cyan]QuickDeploy[/bold cyan]\n"
         f"Project: [green]{project_path.name}[/green]\n"
@@ -78,11 +78,11 @@ def run(
         title="Starting",
         border_style="cyan"
     ))
-    
+
     # Create runner
     global _runner
     _runner = ProcessRunner(project_path, config)
-    
+
     # Add console logging
     def log_callback(message: str):
         # Detect URLs and format them
@@ -91,14 +91,14 @@ def run(
             console.print(url_info)
         else:
             console.print(message)
-    
+
     _runner.add_log_callback(log_callback)
-    
+
     # Run
     if not _runner.run():
         console.print("[red]Failed to start application[/red]")
         raise typer.Exit(1)
-    
+
     # Wait for interrupt
     try:
         _runner.wait()
@@ -126,7 +126,7 @@ def init(
 ):
     """Initialize a new QuickDeploy project or create from template."""
     project_path = Path(path).resolve()
-    
+
     if template:
         # Create from template
         from ..templates import create_template
@@ -140,7 +140,7 @@ def init(
         entrypoint = find_entrypoint(project_path)
         config = create_default_config(project_path, entrypoint.name if entrypoint else None)
         console.print(f"[green]✓[/green] Created .quickdeploy.yaml at {project_path}")
-        console.print(f"[cyan]Edit .quickdeploy.yaml to customize settings[/cyan]")
+        console.print("[cyan]Edit .quickdeploy.yaml to customize settings[/cyan]")
 
 
 @app.command()
@@ -150,17 +150,17 @@ def status():
     table = Table(title="QuickDeploy Status")
     table.add_column("Property", style="cyan")
     table.add_column("Value", style="green")
-    
+
     if _runner and _runner.is_running:
         table.add_row("Status", "[green]Running[/green]")
         table.add_row("Project", str(_runner.project_path))
         table.add_row("Port", str(_runner.config.port))
     else:
         table.add_row("Status", "[yellow]Idle[/yellow]")
-    
+
     cache_manager = CacheManager()
     table.add_row("Cache Size", cache_manager.format_cache_size())
-    
+
     console.print(table)
 
 
@@ -170,7 +170,7 @@ def cache(
 ):
     """Manage QuickDeploy cache."""
     cache_manager = CacheManager()
-    
+
     if clear:
         cache_manager.clear_cache()
         console.print("[green]✓[/green] Cache cleared")
