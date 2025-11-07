@@ -1,18 +1,17 @@
 """Main CLI entry point for QuickDeploy."""
 
-import sys
 from pathlib import Path
-from typing import Optional
+
 import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from ..core.config import load_config, create_default_config
-from ..core.runner import ProcessRunner
-from ..core.cache_manager import CacheManager
-from ..core.utils import find_entrypoint
 from .. import __version__
+from ..core.cache_manager import CacheManager
+from ..core.config import create_default_config, load_config
+from ..core.runner import ProcessRunner
+from ..core.utils import find_entrypoint
 
 
 app = typer.Typer(
@@ -23,7 +22,7 @@ app = typer.Typer(
 console = Console()
 
 # Global runner instance
-_runner: Optional[ProcessRunner] = None
+_runner: ProcessRunner | None = None
 
 
 @app.command()
